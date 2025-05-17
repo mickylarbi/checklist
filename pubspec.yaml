@@ -69,6 +69,7 @@ flutter:
   assets:
     - assets/images/
     - google_fonts/Montserrat/
+    - google_fonts/Montserrat/static/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

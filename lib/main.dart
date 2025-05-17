@@ -1,3 +1,5 @@
+import 'package:checklist/ui/home/home_screen.dart';
+import 'package:checklist/utils/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -28,9 +30,11 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme()
+        colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
+        textTheme: GoogleFonts.montserratTextTheme(),
       ),
-      home: const Scaffold(),
+      home: const HomeScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
