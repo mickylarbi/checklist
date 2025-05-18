@@ -1,4 +1,5 @@
 import 'package:checklist/ui/home/home_screen.dart';
+import 'package:checklist/ui/home/task_details/task_details_screen.dart';
 import 'package:checklist/utils/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class App extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
         textTheme: GoogleFonts.montserratTextTheme(),
       ),
-      home: const HomeScreen(),
+      home: const TaskDetailsScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
