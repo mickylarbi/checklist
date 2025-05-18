@@ -20,6 +20,8 @@ class _PasswordTextFormFieldState extends State<PasswordTextFormField> {
       controller: widget.controller,
       labelText: 'Password',
       obscureText: obscureText,
+      minLines: 1, // for obscureText
+
       prefixIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedSquareLock01,
         color: Colors.grey,
@@ -39,6 +41,16 @@ class _PasswordTextFormFieldState extends State<PasswordTextFormField> {
           size: 20,
         ),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter a password';
+        }
+        if (value.length < 6) {
+          return 'Password should be at least 6 characters';
+        }
+
+        return null;
+      },
     );
   }
 }

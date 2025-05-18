@@ -1,10 +1,14 @@
+import 'package:checklist/business_logic/auth/auth_service.dart';
+import 'package:checklist/ui/auth/login_screen.dart';
 import 'package:checklist/ui/home/filter/filter_row.dart';
 import 'package:checklist/ui/home/task_details/task_details_screen.dart';
+import 'package:checklist/ui/shared/dialogs.dart';
 import 'package:checklist/ui/shared/text_themes.dart';
 import 'package:checklist/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
+import 'package:toastification/toastification.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -32,14 +36,35 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.grey,
-            child: Text(
-              'M',
-              style: titleMedium(
-                context,
-              ).copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+          GestureDetector(
+            onTap: () async {
+              String? errorMessage = await AuthService.signOut();
+
+              if (context.mounted) {
+                if (errorMessage != null) {
+                  showToastNotification(
+                    context,
+                    errorMessage,
+                    type: ToastificationType.error,
+                  );
+                } else {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    (route) => false,
+                  );
+                }
+              }
+            },
+            child: CircleAvatar(
+              radius: 20,
+              backgroundColor: Colors.grey,
+              child: Text(
+                'M',
+                style: titleMedium(
+                  context,
+                ).copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+              ),
             ),
           ),
           SizedBox(width: 24),

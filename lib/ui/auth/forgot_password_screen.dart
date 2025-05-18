@@ -1,11 +1,25 @@
-import 'package:checklist/ui/auth/login_screen.dart';
+import 'package:checklist/business_logic/auth/auth_service.dart';
 import 'package:checklist/ui/shared/custom_filled_button.dart';
+import 'package:checklist/ui/shared/dialogs.dart';
 import 'package:checklist/ui/shared/email_text_form_field.dart';
 import 'package:checklist/ui/shared/text_themes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:toastification/toastification.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
+
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final emailController = TextEditingController();
+
+  final formKey = GlobalKey<FormState>();
+
+  final isLoadingNotifier = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -29,26 +43,63 @@ class ForgotPasswordScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 30),
-            EmailTextFormField(),
+            Form(
+              key: formKey,
+              child: EmailTextFormField(controller: emailController),
+            ),
             SizedBox(height: 20),
             CustomFilledButton(
-              onPressed: () {
+              onPressed: () async {
                 //firebase login
 
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (route) => false,
-                );
+                if (formKey.currentState?.validate() == true) {
+                  isLoadingNotifier.value = true;
+
+                  String? errorMessage =
+                      await AuthService.sendPasswordResetEmail(
+                        emailController.text,
+                      );
+
+                  isLoadingNotifier.value = false;
+
+                  if (context.mounted) {
+                    if (errorMessage != null) {
+                      showToastNotification(
+                        context,
+                        errorMessage,
+                        type: ToastificationType.error,
+                      );
+                    } else {
+                      Navigator.pop(context, true);
+                    }
+                  }
+                }
               },
-              child: Text(
-                'Reset',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              child: ValueListenableBuilder(
+                valueListenable: isLoadingNotifier,
+                builder: (context, value, child) {
+                  if (value) {
+                    return SpinKitDoubleBounce(size: 14, color: Colors.white);
+                  }
+                  return Text(
+                    'Reset',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+
+    isLoadingNotifier.dispose();
+
+    super.dispose();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 
 Future<T?> showCustomBottomSheet<T>({
   required BuildContext context,
@@ -13,3 +14,23 @@ Future<T?> showCustomBottomSheet<T>({
   builder: builder,
   isScrollControlled: true,
 );
+
+ToastificationItem showToastNotification(
+  BuildContext context,
+  String titleText, {
+  ToastificationType? type,
+}) {
+  return toastification.show(
+    context: context,
+    title: Text(titleText),
+
+    foregroundColor: Theme.of(context).colorScheme.onSurface,
+    autoCloseDuration: const Duration(seconds: 3),
+    showProgressBar: false,
+    style: ToastificationStyle.fillColored,
+    type: type ?? ToastificationType.info,
+    // primaryColor: colorFromToastificationType(type ?? ToastificationType.info),
+    alignment: Alignment.bottomCenter,
+    // backgroundColor: themePrimaryColorFromContext(context).withOpacity(.5),
+  );
+}
