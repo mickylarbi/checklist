@@ -23,72 +23,79 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.all(24),
-          children: [
-            Center(child: Image.asset('assets/images/logo.png')),
-            SizedBox(height: 30),
-            Text(
-              'Forgot password',
-              style: headlineMedium(
-                context,
-              ).copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              'We\'ll send you an email to help you reset it',
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 30),
-            Form(
-              key: formKey,
-              child: EmailTextFormField(controller: emailController),
-            ),
-            SizedBox(height: 20),
-            CustomFilledButton(
-              onPressed: () async {
-                //firebase login
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(elevation: 0, backgroundColor: Colors.transparent),
+        body: Center(
+          child: ListView(
+            shrinkWrap: true,
+            padding: const EdgeInsets.all(24),
+            children: [
+              Center(child: Image.asset('assets/images/logo.png')),
+              SizedBox(height: 30),
+              Text(
+                'Forgot password',
+                style: headlineMedium(
+                  context,
+                ).copyWith(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                'We\'ll send you an email to help you reset it',
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 30),
+              Form(
+                key: formKey,
+                child: EmailTextFormField(controller: emailController),
+              ),
+              SizedBox(height: 20),
+              CustomFilledButton(
+                onPressed: () async {
+                  //firebase login
 
-                if (formKey.currentState?.validate() == true) {
-                  isLoadingNotifier.value = true;
+                  if (formKey.currentState?.validate() == true) {
+                    isLoadingNotifier.value = true;
 
-                  String? errorMessage =
-                      await AuthService.sendPasswordResetEmail(
-                        emailController.text,
-                      );
+                    String? errorMessage =
+                        await AuthService.sendPasswordResetEmail(
+                          emailController.text,
+                        );
 
-                  isLoadingNotifier.value = false;
+                    isLoadingNotifier.value = false;
 
-                  if (context.mounted) {
-                    if (errorMessage != null) {
-                      showToastNotification(
-                        context,
-                        errorMessage,
-                        type: ToastificationType.error,
-                      );
-                    } else {
-                      Navigator.pop(context, true);
+                    if (context.mounted) {
+                      if (errorMessage != null) {
+                        showToastNotification(
+                          context,
+                          errorMessage,
+                          type: ToastificationType.error,
+                        );
+                      } else {
+                        Navigator.pop(context, true);
+                      }
                     }
                   }
-                }
-              },
-              child: ValueListenableBuilder(
-                valueListenable: isLoadingNotifier,
-                builder: (context, value, child) {
-                  if (value) {
-                    return SpinKitDoubleBounce(size: 14, color: Colors.white);
-                  }
-                  return Text(
-                    'Reset',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  );
                 },
+                child: ValueListenableBuilder(
+                  valueListenable: isLoadingNotifier,
+                  builder: (context, value, child) {
+                    if (value) {
+                      return SpinKitDoubleBounce(size: 14, color: Colors.white);
+                    }
+                    return Text(
+                      'Reset',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

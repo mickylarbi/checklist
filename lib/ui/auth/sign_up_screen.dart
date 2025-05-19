@@ -31,105 +31,114 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Form(
-        key: formKey,
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(24),
-            children: [
-              Center(child: Image.asset('assets/images/logo.png')),
-              SizedBox(height: 30),
-              Text(
-                'Sign up',
-                style: headlineMedium(
-                  context,
-                ).copyWith(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 30),
-              CustomTextFormField(
-                controller: nameController,
-                labelText: 'Name',
-                prefixIcon: HugeIcon(
-                  icon: HugeIcons.strokeRoundedUser,
-                  color: Colors.grey,
-                  size: 16,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: Form(
+          key: formKey,
+          child: Center(
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(24),
+              children: [
+                Center(child: Image.asset('assets/images/logo.png')),
+                SizedBox(height: 30),
+                Text(
+                  'Sign up',
+                  style: headlineMedium(
+                    context,
+                  ).copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
+                SizedBox(height: 30),
+                CustomTextFormField(
+                  controller: nameController,
+                  labelText: 'Name',
+                  prefixIcon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedUser,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
 
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              EmailTextFormField(controller: emailController),
-              SizedBox(height: 20),
-              PasswordTextFormField(controller: passwordController),
-              SizedBox(height: 40),
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                EmailTextFormField(controller: emailController),
+                SizedBox(height: 20),
+                PasswordTextFormField(controller: passwordController),
+                SizedBox(height: 40),
 
-              CustomFilledButton(
-                onPressed: () async {
-                  //firebase sign up
+                CustomFilledButton(
+                  onPressed: () async {
+                    //firebase sign up
 
-                  if (formKey.currentState?.validate() == true) {
-                    isLoadingNotifier.value = true;
+                    if (formKey.currentState?.validate() == true) {
+                      isLoadingNotifier.value = true;
 
-                    String? errorMessage = await AuthService.signUp(
-                      nameController.text,
-                      emailController.text,
-                      passwordController.text,
-                    );
-                    
-                    isLoadingNotifier.value = false;
+                      String? errorMessage = await AuthService.signUp(
+                        nameController.text,
+                        emailController.text,
+                        passwordController.text,
+                      );
 
-                    if (context.mounted) {
-                      if (errorMessage != null) {
-                        showToastNotification(
-                          context,
-                          errorMessage,
-                          type: ToastificationType.error,
-                        );
-                      } else {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
-                          (route) => false,
-                        );
+                      isLoadingNotifier.value = false;
+
+                      if (context.mounted) {
+                        if (errorMessage != null) {
+                          showToastNotification(
+                            context,
+                            errorMessage,
+                            type: ToastificationType.error,
+                          );
+                        } else {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
+                            ),
+                            (route) => false,
+                          );
+                        }
                       }
                     }
-
-                  }
-                },
-                child: ValueListenableBuilder(
-                  valueListenable: isLoadingNotifier,
-                  builder: (context, value, child) {
-                    if (value) {
-                      return SpinKitDoubleBounce(size: 14, color: Colors.white);
-                    }
-                    return Text(
-                      'Sign up',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                  },
+                  child: ValueListenableBuilder(
+                    valueListenable: isLoadingNotifier,
+                    builder: (context, value, child) {
+                      if (value) {
+                        return SpinKitDoubleBounce(
+                          size: 14,
+                          color: Colors.white,
+                        );
+                      }
+                      return Text(
+                        'Sign up',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 20),
+                CustomTextSpan(
+                  firstText: 'Already have an account? ',
+                  secondText: 'Login',
+                  onActionPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                      (route) => false,
                     );
                   },
                 ),
-              ),
-              SizedBox(height: 20),
-              CustomTextSpan(
-                firstText: 'Already have an account? ',
-                secondText: 'Login',
-                onActionPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                    (route) => false,
-                  );
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

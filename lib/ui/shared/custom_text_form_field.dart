@@ -13,6 +13,9 @@ class CustomTextFormField extends StatelessWidget {
     this.obscureText = false,
     this.minLines,
     this.enabled,
+    this.onFieldSubmitted,
+    this.keyboardType,
+    this.labelStyle,
   });
 
   final String labelText;
@@ -23,6 +26,9 @@ class CustomTextFormField extends StatelessWidget {
   final bool obscureText;
   final int? minLines;
   final bool? enabled;
+  final void Function(String)? onFieldSubmitted;
+  final TextInputType? keyboardType;
+  final TextStyle? labelStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +40,8 @@ class CustomTextFormField extends StatelessWidget {
       minLines: minLines,
       maxLines: minLines,
       enabled: enabled,
+      onFieldSubmitted: onFieldSubmitted,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
@@ -47,12 +55,22 @@ class CustomTextFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: Color(0xFFC1C1C1)),
         ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Color(0xFFC1C1C1)),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.red[900]!),
+        ),
 
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         labelText: labelText,
+
         alignLabelWithHint: true,
-        labelStyle: bodyMedium(context).copyWith(color: Colors.grey),
+        labelStyle:
+            labelStyle ?? bodyMedium(context).copyWith(color: Colors.grey),
         floatingLabelStyle: labelMedium(
           context,
         ).copyWith(color: primaryColor, fontWeight: FontWeight.bold),

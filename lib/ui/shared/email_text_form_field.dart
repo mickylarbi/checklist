@@ -13,6 +13,7 @@ class EmailTextFormField extends StatelessWidget {
     return CustomTextFormField(
       controller: controller,
       labelText: 'Email',
+      keyboardType: TextInputType.emailAddress,
       prefixIcon: HugeIcon(
         icon: HugeIcons.strokeRoundedMail01,
         color: Colors.grey,

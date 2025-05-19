@@ -19,6 +19,7 @@ Future<void> main() async {
   });
   GoogleFonts.config.allowRuntimeFetching = false;
 
+
   runApp(const App());
 }
 

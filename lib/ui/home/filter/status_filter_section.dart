@@ -1,4 +1,4 @@
-import 'package:checklist/business_logic/enums/status.dart';
+import 'package:checklist/business_logic/enums/task_status.dart';
 import 'package:checklist/ui/home/filter/status_filter_bottom_sheet_item.dart';
 import 'package:checklist/ui/shared/text_themes.dart';
 import 'package:flutter/material.dart';

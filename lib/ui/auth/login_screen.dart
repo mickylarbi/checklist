@@ -31,117 +31,127 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Form(
-        key: formKey,
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(24),
-            children: [
-              Center(child: Image.asset('assets/images/logo.png')),
-              SizedBox(height: 30),
-              Text(
-                'Login',
-                style: headlineMedium(
-                  context,
-                ).copyWith(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: Form(
+          key: formKey,
+          child: Center(
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(24),
+              children: [
+                Center(child: Image.asset('assets/images/logo.png')),
+                SizedBox(height: 30),
+                Text(
+                  'Login',
+                  style: headlineMedium(
+                    context,
+                  ).copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
 
-              SizedBox(height: 30),
-              EmailTextFormField(controller: emailController),
-              SizedBox(height: 20),
-              PasswordTextFormField(controller: passwordController),
-              SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerRight,
-                child: CustomTextButton(
-                  onPressed: () async {
-                    bool? emailSent = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ForgotPasswordScreen(),
-                      ),
-                    );
-
-                    if (emailSent == true && context.mounted) {
-                      showToastNotification(
+                SizedBox(height: 30),
+                EmailTextFormField(controller: emailController),
+                SizedBox(height: 20),
+                PasswordTextFormField(controller: passwordController),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: CustomTextButton(
+                    onPressed: () async {
+                      bool? emailSent = await Navigator.push(
                         context,
-                        'Kindly check your email inbox for instructions to reset your password',
+                        MaterialPageRoute(
+                          builder: (context) => ForgotPasswordScreen(),
+                        ),
                       );
-                    }
-                  },
-                  child: Text(
-                    'Forgot password?',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.w600,
-                      color: primaryColor,
+
+                      if (emailSent == true && context.mounted) {
+                        showToastNotification(
+                          context,
+                          'Kindly check your email inbox for instructions to reset your password',
+                        );
+                      }
+                    },
+                    child: Text(
+                      'Forgot password?',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w600,
+                        color: primaryColor,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
+                SizedBox(height: 20),
 
-              CustomFilledButton(
-                onPressed: () async {
-                  //firebase login
+                CustomFilledButton(
+                  onPressed: () async {
+                    //firebase login
 
-                  if (formKey.currentState?.validate() == true) {
-                    isLoadingNotifier.value = true;
+                    if (formKey.currentState?.validate() == true) {
+                      isLoadingNotifier.value = true;
 
-                    String? errorMessage = await AuthService.login(
-                      emailController.text,
-                      passwordController.text,
-                    );
+                      String? errorMessage = await AuthService.login(
+                        emailController.text,
+                        passwordController.text,
+                      );
 
-                    isLoadingNotifier.value = false;
+                      isLoadingNotifier.value = false;
 
-                    if (context.mounted) {
-                      if (errorMessage != null) {
-                        showToastNotification(
-                          context,
-                          errorMessage,
-                          type: ToastificationType.error,
-                        );
-                      } else {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
-                          (route) => false,
-                        );
+                      if (context.mounted) {
+                        if (errorMessage != null) {
+                          showToastNotification(
+                            context,
+                            errorMessage,
+                            type: ToastificationType.error,
+                          );
+                        } else {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
+                            ),
+                            (route) => false,
+                          );
+                        }
                       }
                     }
-                  }
-                },
-                child: ValueListenableBuilder(
-                  valueListenable: isLoadingNotifier,
-                  builder: (context, value, child) {
-                    if (value) {
-                      return SpinKitDoubleBounce(size: 14, color: Colors.white);
-                    }
-                    return Text(
-                      'Login',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                  },
+                  child: ValueListenableBuilder(
+                    valueListenable: isLoadingNotifier,
+                    builder: (context, value, child) {
+                      if (value) {
+                        return SpinKitDoubleBounce(
+                          size: 14,
+                          color: Colors.white,
+                        );
+                      }
+                      return Text(
+                        'Login',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 20),
+
+                CustomTextSpan(
+                  firstText: 'Don\'t have an account? ',
+                  secondText: 'Sign up',
+                  onActionPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignUpScreen()),
+                      (route) => false,
                     );
                   },
                 ),
-              ),
-              SizedBox(height: 20),
-
-              CustomTextSpan(
-                firstText: 'Don\'t have an account? ',
-                secondText: 'Sign up',
-                onActionPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUpScreen()),
-                    (route) => false,
-                  );
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

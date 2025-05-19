@@ -1,20 +1,19 @@
-import 'package:checklist/business_logic/auth/auth_service.dart';
-import 'package:checklist/ui/auth/login_screen.dart';
-import 'package:checklist/ui/home/filter/filter_row.dart';
+import 'package:checklist/business_logic/cubits/task/task_cubit.dart';
+import 'package:checklist/ui/home/profile/profile_screen.dart';
 import 'package:checklist/ui/home/task_details/task_details_screen.dart';
-import 'package:checklist/ui/shared/dialogs.dart';
 import 'package:checklist/ui/shared/text_themes.dart';
 import 'package:checklist/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:intl/intl.dart';
-import 'package:toastification/toastification.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    TaskCubit taskCubit = context.read<TaskCubit>();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -38,23 +37,28 @@ class HomeScreen extends StatelessWidget {
         actions: [
           GestureDetector(
             onTap: () async {
-              String? errorMessage = await AuthService.signOut();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileScreen()),
+              );
 
-              if (context.mounted) {
-                if (errorMessage != null) {
-                  showToastNotification(
-                    context,
-                    errorMessage,
-                    type: ToastificationType.error,
-                  );
-                } else {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                    (route) => false,
-                  );
-                }
-              }
+              // String? errorMessage = await AuthService.signOut();
+
+              // if (context.mounted) {
+              //   if (errorMessage != null) {
+              //     showToastNotification(
+              //       context,
+              //       errorMessage,
+              //       type: ToastificationType.error,
+              //     );
+              //   } else {
+              //     Navigator.pushAndRemoveUntil(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => LoginScreen()),
+              //       (route) => false,
+              //     );
+              //   }
+              // }
             },
             child: CircleAvatar(
               radius: 20,
@@ -70,66 +74,19 @@ class HomeScreen extends StatelessWidget {
           SizedBox(width: 24),
         ],
       ),
-      body: Column(
-        children: [
-          FilterRow(),
-          Divider(height: 0),
-          Expanded(
-            child: ListView.separated(
-              itemCount: 20,
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider(height: 0);
-              },
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Buy groceries',
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Pick up milk, eggs, bread, fruit and snacks',
-                        style: bodySmall(context).copyWith(color: Colors.grey),
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Text(
-                            '${DateFormat.MMMEd().format(DateTime.now())} at ${DateFormat.jm().format(DateTime.now())}',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Spacer(),
-                          HugeIcon(
-                            icon: HugeIcons.strokeRoundedTimeHalfPass,
-                            color: secondaryColor,
-                            size: 16,
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'In Progress',
-                            style: TextStyle(
-                              color: secondaryColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
 
+      // body: Column(
+      //   children: [
+      //     FilterRow(),
+      //     Divider(height: 0),
+      //     Expanded(
+      //       child: BlocProvider(
+      //         create: (context) => TaskCubit(),
+      //         child: TaskListView(),
+      //       ),
+      //     ),
+      //   ],
+      // ),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -137,7 +94,13 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TaskDetailsScreen()),
+                MaterialPageRoute(
+                  builder:
+                      (context) => BlocProvider.value(
+                        value: taskCubit,
+                        child: TaskDetailsScreen(),
+                      ),
+                ),
               );
             },
             backgroundColor: secondaryColor,
@@ -150,6 +113,7 @@ class HomeScreen extends StatelessWidget {
           FloatingActionButton(
             onPressed: () {},
             backgroundColor: Colors.purple,
+            heroTag: 'AI',
             child: HugeIcon(
               icon: HugeIcons.strokeRoundedAiMagic,
               color: Colors.white,
