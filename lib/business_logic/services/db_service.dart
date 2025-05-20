@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,40 +34,56 @@ class DBService {
         dateTime TEXT NOT NULL,
         status TEXT NOT NULL,
         createdAt TEXT NOT NULL,
-        updatedAt TEXT
+        updatedAt TEXT,
+        userId TEXT NOT NULL
       )
     ''');
   }
 
+  String get userId => FirebaseAuth.instance.currentUser!.uid;
+
   // 🔄 Create
   Future<int> insertItem(Map<String, dynamic> item) async {
     final db = await database;
-    return await db.insert('tasks', item);
+    return await db.insert('tasks', {...item, 'userId': userId});
   }
 
   // 📥 Read All
   Future<List<Map<String, dynamic>>> getItems() async {
     final db = await database;
-    return await db.query('tasks');
+    return await db.query('tasks', where: 'userId = ?', whereArgs: [userId]);
   }
 
   // 📤 Read One
   Future<Map<String, dynamic>?> getItem(String id) async {
     final db = await database;
-    final result = await db.query('tasks', where: 'id = ?', whereArgs: [id]);
+    final result = await db.query(
+      'tasks',
+      where: 'id = ? AND userId = ?',
+      whereArgs: [id, userId],
+    );
     return result.isNotEmpty ? result.first : null;
   }
 
   // ✏️ Update
   Future<int> updateItem(String id, Map<String, dynamic> item) async {
     final db = await database;
-    return await db.update('tasks', item, where: 'id = ?', whereArgs: [id]);
+    return await db.update(
+      'tasks',
+      item,
+      where: 'id = ? AND userId = ?',
+      whereArgs: [id, userId],
+    );
   }
 
   // ❌ Delete
   Future<int> deleteItem(String id) async {
     final db = await database;
-    return await db.delete('tasks', where: 'id = ?', whereArgs: [id]);
+    return await db.delete(
+      'tasks',
+      where: 'id = ? AND userId = ?',
+      whereArgs: [id, userId],
+    );
   }
 
   // 🧹 Clear Table
