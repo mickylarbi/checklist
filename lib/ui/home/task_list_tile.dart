@@ -1,7 +1,10 @@
+import 'package:checklist/business_logic/cubits/task/task_cubit.dart';
+import 'package:checklist/business_logic/enums/task_status.dart';
 import 'package:checklist/business_logic/models/task.dart';
+import 'package:checklist/ui/home/task_details/task_details_screen.dart';
 import 'package:checklist/ui/shared/text_themes.dart';
-import 'package:checklist/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
 
@@ -12,44 +15,59 @@ class TaskListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Buy groceries', style: TextStyle(fontWeight: FontWeight.w600)),
-          SizedBox(height: 10),
-          Text(
-            'Pick up milk, eggs, bread, fruit and snacks',
-            style: bodySmall(context).copyWith(color: Colors.grey),
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Text(
-                '${DateFormat.MMMEd().format(DateTime.now())} at ${DateFormat.jm().format(DateTime.now())}',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (_) => BlocProvider.value(
+                  value: context.read<TaskCubit>(),
+                  child: TaskDetailsScreen(task: task),
                 ),
-              ),
-              Spacer(),
-              HugeIcon(
-                icon: HugeIcons.strokeRoundedTimeHalfPass,
-                color: secondaryColor,
-                size: 16,
-              ),
-              SizedBox(width: 10),
-              Text(
-                'In Progress',
-                style: TextStyle(
-                  color: secondaryColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
           ),
-        ],
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(task.title, style: TextStyle(fontWeight: FontWeight.w600)),
+            SizedBox(height: 10),
+            if (task.description != null)
+              Text(
+                task.description!,
+                style: bodySmall(context).copyWith(color: Colors.grey),
+              ),
+            if (task.description != null) SizedBox(height: 10),
+            Row(
+              children: [
+                Text(
+                  '${DateFormat.MMMEd().format(task.dateTime)} at ${DateFormat.jm().format(task.dateTime)}',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Spacer(),
+                HugeIcon(
+                  icon: getTaskStatusIcon(task.status),
+                  color: getTaskStatusColor(task.status),
+                  size: 16,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  getTaskStatusName(task.status),
+                  style: TextStyle(
+                    color: getTaskStatusColor(task.status),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

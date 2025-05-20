@@ -10,7 +10,9 @@ import 'package:uuid/uuid.dart';
 part 'task_state.dart';
 
 class TaskCubit extends Cubit<TaskState> {
-  TaskCubit() : super(TaskLoaded([]));
+  TaskCubit() : super(TaskLoaded([])) {
+    getTasks();
+  }
 
   //CRUD
 
@@ -24,9 +26,7 @@ class TaskCubit extends Cubit<TaskState> {
 
       emit(TaskAdded([...state.tasks, newTask]));
 
-      final items = await DBService().getItems();
-      final tasks = items.map((item) => Task.fromMap(item)).toList();
-      emit(TaskLoaded(tasks));
+      getTasks();
     } catch (e) {
       log('error: $e');
       emit(TaskAddError(state.tasks));
@@ -34,16 +34,22 @@ class TaskCubit extends Cubit<TaskState> {
     }
   }
 
-  editTask(Task task) {
+  getTasks() async {
+    final items = await DBService().getItems();
+    final tasks = items.map((item) => Task.fromMap(item)).toList();
+    emit(TaskLoaded(tasks));
+  }
+
+  editTask(Task task) async {
     emit(TaskEditing(state.tasks));
 
     try {
       if (task.id == null) throw Exception('No task id found');
 
-      // tasks = tasks.map((e) => e.id == task.id ? task : e).toList();
+      await DBService().updateItem(task.id!, task.toMap());
 
       emit(TaskEdited(state.tasks));
-      emit(TaskLoaded(state.tasks));
+      getTasks(); //
     } catch (e) {
       log('error: $e');
       emit(TaskEditError(state.tasks));
@@ -51,13 +57,16 @@ class TaskCubit extends Cubit<TaskState> {
     }
   }
 
-  deleteTask(Task task) {
+  deleteTask(Task task) async {
     try {
       emit(TaskDeleting(state.tasks));
 
       if (task.id == null) throw Exception('No task id found');
 
-      // tasks.removeWhere((e) => e.id == task.id);
+      await DBService().deleteItem(task.id!);
+
+      emit(TaskDeleted(state.tasks));
+      getTasks();
 
       emit(TaskDeleted(state.tasks));
       emit(TaskLoaded(state.tasks));

@@ -1,7 +1,6 @@
 import 'package:checklist/business_logic/auth/auth_service.dart';
 import 'package:checklist/ui/auth/forgot_password_screen.dart';
 import 'package:checklist/ui/auth/sign_up_screen.dart';
-import 'package:checklist/ui/home/home_screen.dart';
 import 'package:checklist/ui/shared/custom_filled_button.dart';
 import 'package:checklist/ui/shared/custom_text_button.dart';
 import 'package:checklist/ui/shared/custom_text_span.dart';
@@ -9,6 +8,7 @@ import 'package:checklist/ui/shared/dialogs.dart';
 import 'package:checklist/ui/shared/email_text_form_field.dart';
 import 'package:checklist/ui/shared/password_text_form_field.dart';
 import 'package:checklist/ui/shared/text_themes.dart';
+import 'package:checklist/ui/splash_screen.dart';
 import 'package:checklist/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -113,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => HomeScreen(),
+                              builder: (context) => SplashScreen(),
                             ),
                             (route) => false,
                           );

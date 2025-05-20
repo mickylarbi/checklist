@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:checklist/ui/home/task_details/a_i_button.dart';
 import 'package:checklist/ui/shared/custom_text_form_field.dart';
 import 'package:checklist/ui/shared/text_themes.dart';
 import 'package:flutter/cupertino.dart';
@@ -195,7 +194,6 @@ class DateAndTimeSection extends StatelessWidget {
           },
         ),
         const SizedBox(height: 10),
-        AIButton(),
       ],
     );
   }

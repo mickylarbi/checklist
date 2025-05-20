@@ -22,7 +22,7 @@ ToastificationItem showToastNotification(
 }) {
   return toastification.show(
     context: context,
-    title: Text(titleText),
+    title: Text(titleText, style: const TextStyle(fontWeight: FontWeight.w600)),
 
     foregroundColor: Theme.of(context).colorScheme.onSurface,
     autoCloseDuration: const Duration(seconds: 3),

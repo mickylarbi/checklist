@@ -1,14 +1,23 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:checklist/business_logic/cubits/task/task_cubit.dart';
 import 'package:checklist/business_logic/enums/task_status.dart';
 import 'package:checklist/business_logic/models/task.dart';
+import 'package:checklist/business_logic/services/db_service.dart';
 import 'package:checklist/ui/home/task_details/a_i_button.dart';
 import 'package:checklist/ui/home/task_details/date_and_time_section.dart';
 import 'package:checklist/ui/home/task_details/status_drop_down_form_field.dart';
 import 'package:checklist/ui/shared/custom_filled_button.dart';
 import 'package:checklist/ui/shared/custom_text_form_field.dart';
+import 'package:checklist/ui/shared/dialogs.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:toastification/toastification.dart';
 
 class TaskDetailsScreen extends StatefulWidget {
   const TaskDetailsScreen({super.key, this.task});
@@ -47,10 +56,57 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          centerTitle: true,
           backgroundColor: Colors.white.withAlpha(70),
           elevation: 0,
           surfaceTintColor: Colors.transparent,
           title: Text('Add task'),
+          actions: [
+            if (widget.task != null)
+              IconButton.filled(
+                onPressed: () {
+                  showCupertinoDialog(
+                    context: context,
+                    builder:
+                        (ctx) => CupertinoAlertDialog(
+                          title: Text('Delete Task'),
+                          content: Text(
+                            'Are you sure you want to delete this task?',
+                          ),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: Text('Cancel'),
+                              onPressed: () => Navigator.of(ctx).pop(),
+                            ),
+                            CupertinoDialogAction(
+                              isDestructiveAction: true,
+                              child: Text('Delete'),
+                              onPressed: () {
+                                Navigator.of(ctx).pop();
+                                if (widget.task != null) {
+                                  context.read<TaskCubit>().deleteTask(
+                                    widget.task!,
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                  );
+                },
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.red.withAlpha(40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedDelete02,
+                  color: Colors.red,
+                ),
+              ),
+            SizedBox(width: 12),
+          ],
         ),
         body: Stack(
           alignment: Alignment.bottomCenter,
@@ -75,12 +131,164 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     minLines: 5,
                   ),
                   SizedBox(height: 10),
-                  AIButton(),
+                  AIButton(
+                    onPressed: () async {
+                      if (titleController.text.trim().isEmpty) {
+                        showToastNotification(
+                          context,
+                          'Please add a title',
+                          type: ToastificationType.warning,
+                        );
+                        return;
+                      }
+
+                      showToastNotification(context, 'Generating description');
+
+                      try {
+                        final uri = Uri.https(
+                          'checklist-backend-5dr2.onrender.com',
+                          'suggest/description',
+                        );
+
+                        final task = Task(
+                          id: widget.task?.id,
+                          title: titleController.text.trim(),
+                          description:
+                              descriptionController.text.trim().isEmpty
+                                  ? null
+                                  : descriptionController.text.trim(),
+                          dateTime: DateTime(
+                            dateNotifier.value.year,
+                            dateNotifier.value.month,
+                            dateNotifier.value.day,
+                            timeNotifier.value.hour,
+                            timeNotifier.value.minute,
+                            timeNotifier.value.second,
+                            timeNotifier.value.millisecond,
+                            timeNotifier.value.microsecond,
+                          ),
+                          status: statusNotifier.value,
+                          createdAt: DateTime.now(),
+                        );
+
+                        final items = await DBService().getItems();
+
+                        final json = jsonEncode({
+                          "task": task.toMap(),
+                          "context": items,
+                        });
+
+                        final response = await post(
+                          uri,
+                          body: json,
+                          headers: {'Content-Type': 'application/json'},
+                        );
+
+                        log('status code: ${response.statusCode}');
+                        log('body: ${response.body}');
+
+                        if (response.statusCode == 201) {
+                          descriptionController.text =
+                              jsonDecode(response.body)[0];
+                        } else {
+                          throw Exception();
+                        }
+                      } catch (e) {
+                        log('error: $e');
+                        if (context.mounted) {
+                          showToastNotification(
+                            context,
+                            'Unable to generate description',
+                            type: ToastificationType.error,
+                          );
+                        }
+                      }
+                    },
+                  ),
                   Divider(height: 80),
                   DateAndTimeSection(
                     dateNotifier: dateNotifier,
                     timeNotifier: timeNotifier,
                   ),
+                  AIButton(
+                    onPressed: () async {
+                      if (titleController.text.trim().isEmpty) {
+                        showToastNotification(
+                          context,
+                          'Please add a title',
+                          type: ToastificationType.warning,
+                        );
+                        return;
+                      }
+
+                      showToastNotification(context, 'Generating description');
+
+                      try {
+                        final uri = Uri.https(
+                          'checklist-backend-5dr2.onrender.com',
+                          'suggest/due-date',
+                        );
+
+                        final task = Task(
+                          id: widget.task?.id,
+                          title: titleController.text.trim(),
+                          description:
+                              descriptionController.text.trim().isEmpty
+                                  ? null
+                                  : descriptionController.text.trim(),
+                          dateTime: DateTime(
+                            dateNotifier.value.year,
+                            dateNotifier.value.month,
+                            dateNotifier.value.day,
+                            timeNotifier.value.hour,
+                            timeNotifier.value.minute,
+                            timeNotifier.value.second,
+                            timeNotifier.value.millisecond,
+                            timeNotifier.value.microsecond,
+                          ),
+                          status: statusNotifier.value,
+                          createdAt: DateTime.now(),
+                        );
+
+                        final items = await DBService().getItems();
+
+                        final json = jsonEncode({
+                          "task": task.toMap(),
+                          "context": items,
+                        });
+
+                        final response = await post(
+                          uri,
+                          body: json,
+                          headers: {'Content-Type': 'application/json'},
+                        );
+
+                        log('status code: ${response.statusCode}');
+                        log('body: ${response.body}');
+
+                        if (response.statusCode == 201) {
+                          final datetime = DateTime.parse(
+                            jsonDecode(response.body)[0],
+                          );
+
+                          dateNotifier.value = datetime;
+                          timeNotifier.value = datetime;
+                        } else {
+                          throw Exception();
+                        }
+                      } catch (e) {
+                        log('error: $e');
+                        if (context.mounted) {
+                          showToastNotification(
+                            context,
+                            'Unable to generate due date',
+                            type: ToastificationType.error,
+                          );
+                        }
+                      }
+                    },
+                  ),
+
                   Divider(height: 80),
                   Text('Set status'),
                   SizedBox(height: 10),
@@ -100,6 +308,16 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                             state is TaskEdited ||
                             state is TaskDeleted) {
                           Navigator.pop(context);
+                        }
+
+                        if (state is TaskAddError ||
+                            state is TaskEditError ||
+                            state is TaskDeleteError) {
+                          showToastNotification(
+                            context,
+                            state.errorMessage ?? 'Something went wrong',
+                            type: ToastificationType.error,
+                          );
                         }
                       },
                       builder: (context, state) {
@@ -122,9 +340,36 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 ),
                 onPressed: () {
                   if (formKey.currentState?.validate() == true) {
-                    context.read<TaskCubit>().addTask(
-                      Task.newTask(
-                        title: titleController.text,
+                    if (widget.task == null) {
+                      context.read<TaskCubit>().addTask(
+                        Task.newTask(
+                          title: titleController.text.trim(),
+                          description:
+                              descriptionController.text.trim().isEmpty
+                                  ? null
+                                  : descriptionController.text.trim(),
+                          dateTime: DateTime(
+                            dateNotifier.value.year,
+                            dateNotifier.value.month,
+                            dateNotifier.value.day,
+                            timeNotifier.value.hour,
+                            timeNotifier.value.minute,
+                            timeNotifier.value.second,
+                            timeNotifier.value.millisecond,
+                            timeNotifier.value.microsecond,
+                          ),
+                          status: statusNotifier.value,
+                          createdAt: DateTime.now(),
+                        ),
+                      );
+                    } else {
+                      Task newTask = Task(
+                        id: widget.task!.id,
+                        title: titleController.text.trim(),
+                        description:
+                            descriptionController.text.trim().isEmpty
+                                ? null
+                                : descriptionController.text.trim(),
                         dateTime: DateTime(
                           dateNotifier.value.year,
                           dateNotifier.value.month,
@@ -137,8 +382,12 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                         ),
                         status: statusNotifier.value,
                         createdAt: DateTime.now(),
-                      ),
-                    );
+                      );
+
+                      if (widget.task != newTask) {
+                        context.read<TaskCubit>().editTask(newTask);
+                      }
+                    }
                   }
                 },
               ),

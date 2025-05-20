@@ -44,37 +44,39 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC-dlEmicuYRNZS8pvXTB_0fbC7S8wvw4c',
-    appId: '1:867124481361:web:77ffb5b5166e3ff8e51770',
-    messagingSenderId: '867124481361',
-    projectId: 'checklist-a49023',
-    authDomain: 'checklist-a49023.firebaseapp.com',
-    storageBucket: 'checklist-a49023.firebasestorage.app',
+    apiKey: 'AIzaSyCr8Zd-x_-RyLSIKyaPdJUoat-8pTKpRVY',
+    appId: '1:316750560337:web:0fa887d7d16cf5f091cc70',
+    messagingSenderId: '316750560337',
+    projectId: 'maims-ghglobal',
+    authDomain: 'maims-ghglobal.firebaseapp.com',
+    storageBucket: 'maims-ghglobal.firebasestorage.app',
+    measurementId: 'G-EJXZS91LM5',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAzgibk1yhaDlDObp01ojxZpqzidAnf76U',
-    appId: '1:867124481361:android:0493976649333f7fe51770',
-    messagingSenderId: '867124481361',
-    projectId: 'checklist-a49023',
-    storageBucket: 'checklist-a49023.firebasestorage.app',
+    apiKey: 'AIzaSyAATDmoj2GgdVENl3dYvpDn8VlsFInCBW4',
+    appId: '1:316750560337:android:3c1db750840565ed91cc70',
+    messagingSenderId: '316750560337',
+    projectId: 'maims-ghglobal',
+    storageBucket: 'maims-ghglobal.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyABtCU2WACc0AnTTVgUYvNLbMhQGv5Id7Q',
-    appId: '1:867124481361:ios:962c8e596ab94a1be51770',
-    messagingSenderId: '867124481361',
-    projectId: 'checklist-a49023',
-    storageBucket: 'checklist-a49023.firebasestorage.app',
+    apiKey: 'AIzaSyAWP8DzufCKBRSC4toSpBo5dcETlKOPm60',
+    appId: '1:316750560337:ios:424fcc8391a70d3b91cc70',
+    messagingSenderId: '316750560337',
+    projectId: 'maims-ghglobal',
+    storageBucket: 'maims-ghglobal.firebasestorage.app',
     iosBundleId: 'com.example.checklist',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyABtCU2WACc0AnTTVgUYvNLbMhQGv5Id7Q',
-    appId: '1:867124481361:ios:962c8e596ab94a1be51770',
-    messagingSenderId: '867124481361',
-    projectId: 'checklist-a49023',
-    storageBucket: 'checklist-a49023.firebasestorage.app',
+    apiKey: 'AIzaSyAWP8DzufCKBRSC4toSpBo5dcETlKOPm60',
+    appId: '1:316750560337:ios:424fcc8391a70d3b91cc70',
+    messagingSenderId: '316750560337',
+    projectId: 'maims-ghglobal',
+    storageBucket: 'maims-ghglobal.firebasestorage.app',
     iosBundleId: 'com.example.checklist',
   );
+
 }

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "867124481361",
-    "project_id": "checklist-a49023",
-    "storage_bucket": "checklist-a49023.firebasestorage.app"
+    "project_number": "316750560337",
+    "project_id": "maims-ghglobal",
+    "storage_bucket": "maims-ghglobal.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:867124481361:android:0493976649333f7fe51770",
+        "mobilesdk_app_id": "1:316750560337:android:3c1db750840565ed91cc70",
         "android_client_info": {
           "package_name": "com.example.checklist"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAzgibk1yhaDlDObp01ojxZpqzidAnf76U"
+          "current_key": "AIzaSyAATDmoj2GgdVENl3dYvpDn8VlsFInCBW4"
         }
       ],
       "services": {

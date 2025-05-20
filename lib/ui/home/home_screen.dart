@@ -1,8 +1,12 @@
+
 import 'package:checklist/business_logic/cubits/task/task_cubit.dart';
-import 'package:checklist/ui/home/profile/profile_screen.dart';
+import 'package:checklist/ui/home/menu_icon_button.dart';
+import 'package:checklist/ui/home/profile_image.dart';
 import 'package:checklist/ui/home/task_details/task_details_screen.dart';
+import 'package:checklist/ui/home/task_list_view.dart';
 import 'package:checklist/ui/shared/text_themes.dart';
 import 'package:checklist/utils/colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -34,59 +38,10 @@ class HomeScreen extends StatelessWidget {
             Image.asset('assets/images/logo.png', height: 24, width: 24),
           ],
         ),
-        actions: [
-          GestureDetector(
-            onTap: () async {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfileScreen()),
-              );
-
-              // String? errorMessage = await AuthService.signOut();
-
-              // if (context.mounted) {
-              //   if (errorMessage != null) {
-              //     showToastNotification(
-              //       context,
-              //       errorMessage,
-              //       type: ToastificationType.error,
-              //     );
-              //   } else {
-              //     Navigator.pushAndRemoveUntil(
-              //       context,
-              //       MaterialPageRoute(builder: (context) => LoginScreen()),
-              //       (route) => false,
-              //     );
-              //   }
-              // }
-            },
-            child: CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.grey,
-              child: Text(
-                'M',
-                style: titleMedium(
-                  context,
-                ).copyWith(fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-            ),
-          ),
-          SizedBox(width: 24),
-        ],
+        actions: [ProfileImage(), MenuIconButton(), SizedBox(width: 10)],
       ),
 
-      // body: Column(
-      //   children: [
-      //     FilterRow(),
-      //     Divider(height: 0),
-      //     Expanded(
-      //       child: BlocProvider(
-      //         create: (context) => TaskCubit(),
-      //         child: TaskListView(),
-      //       ),
-      //     ),
-      //   ],
-      // ),
+      body: TaskListView(),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

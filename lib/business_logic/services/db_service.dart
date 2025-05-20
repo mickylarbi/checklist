@@ -26,10 +26,11 @@ class DBService {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE tasks (
-        index INTEGER PRIMARY KEY AUTOINCREMENT,
+        idx INTEGER PRIMARY KEY AUTOINCREMENT,
         id TEXT NOT NULL UNIQUE,
+        title TEXT NOT NULL,
         description TEXT,
-        dateTime TEXT,
+        dateTime TEXT NOT NULL,
         status TEXT NOT NULL,
         createdAt TEXT NOT NULL,
         updatedAt TEXT
@@ -50,20 +51,20 @@ class DBService {
   }
 
   // 📤 Read One
-  Future<Map<String, dynamic>?> getItem(int id) async {
+  Future<Map<String, dynamic>?> getItem(String id) async {
     final db = await database;
     final result = await db.query('tasks', where: 'id = ?', whereArgs: [id]);
     return result.isNotEmpty ? result.first : null;
   }
 
   // ✏️ Update
-  Future<int> updateItem(int id, Map<String, dynamic> item) async {
+  Future<int> updateItem(String id, Map<String, dynamic> item) async {
     final db = await database;
     return await db.update('tasks', item, where: 'id = ?', whereArgs: [id]);
   }
 
   // ❌ Delete
-  Future<int> deleteItem(int id) async {
+  Future<int> deleteItem(String id) async {
     final db = await database;
     return await db.delete('tasks', where: 'id = ?', whereArgs: [id]);
   }
