@@ -8,7 +8,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:toastification/toastification.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({super.key});
+  const ForgotPasswordScreen({super.key, this.email});
+  final String? email;
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -20,6 +21,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final formKey = GlobalKey<FormState>();
 
   final isLoadingNotifier = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.email != null) {
+      emailController.text = widget.email!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

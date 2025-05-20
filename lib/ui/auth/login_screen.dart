@@ -10,6 +10,7 @@ import 'package:checklist/ui/shared/password_text_form_field.dart';
 import 'package:checklist/ui/shared/text_themes.dart';
 import 'package:checklist/ui/splash_screen.dart';
 import 'package:checklist/utils/colors.dart';
+import 'package:checklist/utils/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:toastification/toastification.dart';
@@ -65,7 +66,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       bool? emailSent = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ForgotPasswordScreen(),
+                          builder:
+                              (context) => ForgotPasswordScreen(
+                                email:
+                                    emailRegex.hasMatch(
+                                          emailController.text.trim(),
+                                        )
+                                        ? emailController.text
+                                        : null,
+                              ),
                         ),
                       );
 
