@@ -9,7 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, required this.imageSetState});
+  final void Function(void Function()) imageSetState;
 
   User get user => FirebaseAuth.instance.currentUser!;
 
@@ -26,7 +27,7 @@ class ProfileScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 40),
         children: [
-          EditProfileImage(),
+          EditProfileImage(imageSetState: imageSetState,),
           SizedBox(height: 20),
           EditNameListTile(),
           EditEmailListTile(),

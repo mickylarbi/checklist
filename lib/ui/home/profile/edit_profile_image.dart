@@ -7,9 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:toastification/toastification.dart';
 
 class EditProfileImage extends StatefulWidget {
-  const EditProfileImage({super.key});
+  const EditProfileImage({super.key, required this.imageSetState});
+  final void Function(void Function()) imageSetState;
 
   @override
   State<EditProfileImage> createState() => _EditProfileImageState();
@@ -58,6 +60,30 @@ class _EditProfileImageState extends State<EditProfileImage> {
         );
 
         if (image != null) {
+          final confirm = await showCupertinoDialog<bool>(
+            context: context,
+            builder:
+                (context) => CupertinoAlertDialog(
+                  title: const Text('Update Profile Photo'),
+                  content: const Text(
+                    'Are you sure you want to update your profile photo?',
+                  ),
+                  actions: [
+                    CupertinoDialogAction(
+                      child: const Text('Cancel'),
+                      onPressed: () => Navigator.of(context).pop(false),
+                    ),
+                    CupertinoDialogAction(
+                      isDestructiveAction: true,
+                      child: const Text('Update'),
+                      onPressed: () => Navigator.of(context).pop(true),
+                    ),
+                  ],
+                ),
+          );
+
+          if (confirm != true) return;
+
           log('image is not null');
           showToastNotification(context, 'Updating profile photo');
 
@@ -69,7 +95,12 @@ class _EditProfileImageState extends State<EditProfileImage> {
           await user.updatePhotoURL(downloadUrl);
 
           setState(() {
-            showToastNotification(context, 'Updating profile photo');
+            widget.imageSetState(() {});
+            showToastNotification(
+              context,
+              'Profile photo updated',
+              type: ToastificationType.success,
+            );
           });
         }
       },
