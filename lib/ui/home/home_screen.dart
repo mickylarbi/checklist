@@ -1,12 +1,11 @@
-
 import 'package:checklist/business_logic/cubits/task/task_cubit.dart';
+import 'package:checklist/ui/home/chat/chat_screen.dart';
 import 'package:checklist/ui/home/menu_icon_button.dart';
 import 'package:checklist/ui/home/profile_image.dart';
 import 'package:checklist/ui/home/task_details/task_details_screen.dart';
 import 'package:checklist/ui/home/task_list_view.dart';
 import 'package:checklist/ui/shared/text_themes.dart';
 import 'package:checklist/utils/colors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -66,7 +65,14 @@ class HomeScreen extends StatelessWidget {
           ),
           SizedBox(height: 16),
           FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatScreen(taskCubit: taskCubit),
+                ),
+              );
+            },
             backgroundColor: Colors.purple,
             heroTag: 'AI',
             child: HugeIcon(

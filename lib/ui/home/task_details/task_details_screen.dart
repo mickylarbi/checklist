@@ -11,6 +11,7 @@ import 'package:checklist/ui/home/task_details/status_drop_down_form_field.dart'
 import 'package:checklist/ui/shared/custom_filled_button.dart';
 import 'package:checklist/ui/shared/custom_text_form_field.dart';
 import 'package:checklist/ui/shared/dialogs.dart';
+import 'package:checklist/utils/variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -145,10 +146,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       showToastNotification(context, 'Generating description');
 
                       try {
-                        final uri = Uri.https(
-                          'checklist-backend-5dr2.onrender.com',
-                          'suggest/description',
-                        );
+                        final uri = Uri.https(authority, 'suggest/description');
 
                         final task = Task(
                           id: widget.task?.id,
@@ -224,10 +222,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       showToastNotification(context, 'Generating description');
 
                       try {
-                        final uri = Uri.https(
-                          'checklist-backend-5dr2.onrender.com',
-                          'suggest/due-date',
-                        );
+                        final uri = Uri.https(authority, 'suggest/due-date');
 
                         final task = Task(
                           id: widget.task?.id,

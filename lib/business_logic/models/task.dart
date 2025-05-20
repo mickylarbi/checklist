@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:checklist/business_logic/enums/task_status.dart';
+import 'package:checklist/business_logic/models/operation.dart';
 
 class Task {
   String? id;
@@ -72,6 +73,21 @@ class Task {
       status: TaskStatus.values.byName((map['status'] as String)),
       createdAt: DateTime.parse(map['createdAt']),
       updatedAt: DateTime.tryParse(map['updatedAt'] ?? ''),
+    );
+  }
+
+  factory Task.fromOperation(
+    Operation operation,
+    DateTime createdAt,
+    DateTime? updatedAt,
+  ) {
+    return Task.newTask(
+      title: operation.title ?? '',
+      description: operation.description,
+      dateTime: operation.dueDate ?? DateTime.now(),
+      status: operation.status ?? TaskStatus.toDo,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 
